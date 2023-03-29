@@ -7,21 +7,13 @@ import torchvision.transforms as transforms
 import numpy as np
 import torchvision.transforms.functional as F
 from io import BytesIO
+from utils import SquarePad
+from tqdm import tqdm
 
 
 logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
-
-
-class SquarePad:
-	def __call__(self, image):
-		w, h = image.size
-		max_wh = np.max([w, h])
-		hp = int((max_wh - w) / 2)
-		vp = int((max_wh - h) / 2)
-		padding = (hp, vp, hp, vp)
-		return F.pad(image, padding, 0, 'constant')
 
 
 transform = transforms.Compose([
@@ -35,7 +27,7 @@ def dfLoad(datasetPath: str, transforming: bool = False) -> pd.DataFrame:
     data = []
     faces = 1
 
-    for fileName in imgPaths:
+    for fileName in tqdm(imgPaths):
         _, gender, country, rate, voices = '.'.join(fileName.split('.')[:-1]).split('_')
         with open(os.path.join(datasetPath, fileName), 'rb') as f:
             if transforming:
