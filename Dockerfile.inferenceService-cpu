@@ -27,4 +27,6 @@ COPY ./inferenceService/app.py ./inferenceService/app.py
 COPY ${MAN_MODEL_FROM} ${MAN_MODEL_DEST}
 COPY ${WOMAN_MODEL_FROM} ${WOMAN_MODEL_DEST}
 
-ENTRYPOINT ["uvicorn", "inferenceService.app:app"]
+EXPOSE 80
+
+ENTRYPOINT ["uvicorn", "inferenceService.app:app", "--host", "0.0.0.0", "--port", "80"]
