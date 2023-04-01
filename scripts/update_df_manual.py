@@ -1,10 +1,11 @@
+import sys
+sys.path.append('../')
 import os
 import pandas as pd
 import logging
 from argparse import ArgumentParser
 from PIL import Image
 import torchvision.transforms as transforms
-import numpy as np
 import torchvision.transforms.functional as F
 from io import BytesIO
 from utils import SquarePad
