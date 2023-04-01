@@ -22,7 +22,7 @@ class Result(BaseModel):
 class Model:
 
     def __init__(self, path: str, device: str) -> None:
-        self.model = torch.load(path).eval().to(device)
+        self.model = torch.load(path, map_location=torch.device(device)).eval().to(device)
         self.device = device
 
     async def preprocess(self, data: Data) -> torch.Tensor:

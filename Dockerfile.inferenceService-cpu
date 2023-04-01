@@ -1,0 +1,30 @@
+FROM python:3.10.6-slim
+
+WORKDIR /app
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG MAN_MODEL_FROM
+ARG WOMAN_MODEL_FROM
+ARG MAN_MODEL_DEST
+ARG WOMAN_MODEL_DEST
+
+RUN if [[ -z "$MAN_MODEL_FROM" ] || [ -z "$WOMAN_MODEL_FROM" ] || [ -z "$MAN_MODEL_DEST" ] || [ -z "$WOMAN_MODEL_DEST" ]] ; then \
+    exit 1 ; \
+  fi
+
+RUN apt update
+RUN python3.10 -m pip install --upgrade pip
+RUN python3.10 -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+RUN python3.10 -m pip install Pillow
+RUN python3.10 -m pip install pandas
+RUN python3.10 -m pip install numpy
+RUN python3.10 -m pip install fastapi
+RUN python3.10 -m pip install "uvicorn[standard]"
+
+COPY ./.cfg ./.cfg
+COPY ./utils.py ./utils.py
+COPY ./inferenceService/app.py ./inferenceService/app.py
+COPY ${MAN_MODEL_FROM} ${MAN_MODEL_DEST}
+COPY ${WOMAN_MODEL_FROM} ${WOMAN_MODEL_DEST}
+
+ENTRYPOINT ["uvicorn", "inferenceService.app:app"]
