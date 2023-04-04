@@ -1,0 +1,95 @@
+html,
+body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow: auto;
+  background-color: #f8f9fa;
+}
+
+#root {
+  height: 100%;
+}
+
+#image_uploads {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.card > img {
+  max-height: 100%;
+  object-fit: contain;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.gallery-row {
+  aspect-ratio: 2 / 1;
+}
+
+.rate-row > div > div {
+  width: 4rem;
+}
+
+.rate-row {
+  height: 2rem;
+}
+
+.rate-row .progress {
+  width: 100%;
+}
+
+.progress span {
+  position: absolute;
+  width: 100%;
+}
+
+.progress {
+  position: relative;
+  text-align: center;
+}
+
+#upload_btns > div > button {
+  aspect-ratio: 1 / 1;
+  --bs-btn-padding-x: 1.25rem;
+}
+
+#upload_btns > div > button > span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#bottom {
+  height: 1rem;
+  width: 100%;
+}
+
+#header {
+  width: 100%;
+}
+
+#telegram > * {
+  margin-left: .25rem;
+  margin-right: .25rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#telegram a {
+  padding-top: .125rem;
+  color: #f8f9fa;
+  text-decoration: none;
+}
+
+#toombler > div {
+  width: 100%;
+}

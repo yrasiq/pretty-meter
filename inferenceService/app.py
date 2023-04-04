@@ -3,12 +3,16 @@ sys.path.append('../')
 
 import torch
 import configparser
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from utils import test_transform
 from pydantic import BaseModel
 from base64 import b64decode
 from PIL import Image
 from io import BytesIO
+from fastapi.middleware.cors import CORSMiddleware
 
 
 class Data(BaseModel):
@@ -59,11 +63,30 @@ class Model:
 
 config = configparser.ConfigParser()
 config.read('.cfg')
-print(config.sections())
 man_model = Model(config['DEFAULT']['man'], config['DEFAULT']['device'])
 woman_model = Model(config['DEFAULT']['woman'], config['DEFAULT']['device'])
 app = FastAPI()
 
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+	exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
+	logging.error(f"error: {exc_str}")
+	content = {'status_code': 10422, 'message': exc_str, 'data': None}
+	return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 @app.post('/man/predict')
 async def man_predict(data: Data) -> Result:
