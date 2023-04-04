@@ -48,6 +48,10 @@ body {
   width: 100%;
 }
 
+.rate-row span {
+  margin-top: .1rem;
+}
+
 .progress span {
   position: absolute;
   width: 100%;
