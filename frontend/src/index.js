@@ -54,7 +54,6 @@ function ImagesControlButtons({
 }) {
   const ref = useRef(null);
   const handleUpload = (e) => {
-    ref.current.value = "";
     ref.current.click();
   }
   return (
@@ -246,6 +245,8 @@ class PreviewMultipleImages extends React.Component {
   handleMultipleImages(e) {
     if (e.target.files.length > 4) {
       alert("Максимальное количество файлов - 4");
+      return;
+    } else if (e.target.files.length === 0){
       return;
     };
     const selectedFIles =[];
