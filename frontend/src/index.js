@@ -8,57 +8,34 @@ const host = 'http://127.0.0.1:80';
 
 
 function ImagesGallery({images, showRates, rates}) {
-  let rows = Array(0);
-  for (let i = 0; i < images.length; (i = i + 2)) {
-    rows.push(
-      <React.Fragment key={i}>
-        <div className="row gallery-row" key={"galeryRow" + i.toString()}>
-          {
-            images.slice(i, i + 2).map((url, index) => {
-              return (
-                <div
-                  className="col-6 p-3 h-100"
-                  key={"galeryCol" + i.toString() + index.toString()}
-                >
-                  <div className="card h-100 bg-white">
-                    <img src={url} alt=""/>
-                  </div>
+  return (
+    <div className="d-flex flex-wrap justify-content-center" id="gallery">
+      {
+        images.map((img, index) => {
+          return (
+            <div className="card bg-white d-inline-flex flex-column justify-content-between" key={index}>
+              <div className="img-wrapper flex-grow-1">
+                <img src={img} alt="" />
+              </div>
+              <div className={"rate-wrapper d-flex justify-content-center" + (showRates ? "" : " d-none")}>
+                <div className="progress h-100">
+                  <span className="h4">{rates[index].toString()}</span>
+                  <div
+                    className="progress-bar"
+                    role="progressbar"
+                    aria-valuenow={rates[index].toString()}
+                    aria-valuemin="0"
+                    aria-valuemax="10"
+                    style={{width: (rates[index] * 10).toString() + "%"}}
+                  ></div>
                 </div>
-              )
-            })
-          }
-        </div>
-        <div
-          className={"row rate-row" + (showRates ? "" : " d-none")}
-          key={"rateRow" + i.toString()}
-        >
-          {
-            images.slice(i, i + 2).map((url, index) => {
-              return (
-                <div
-                  className="col-6 px-3 h-100 d-flex justify-content-center"
-                  key={"rateCol" + i.toString() + index.toString()}
-                >
-                  <div className="progress h-100">
-                    <span className="h4">{rates[index + i].toString()}</span>
-                    <div
-                      className="progress-bar"
-                      role="progressbar"
-                      aria-valuenow={rates[index + i].toString()}
-                      aria-valuemin="0"
-                      aria-valuemax="10"
-                      style={{width: (rates[index + i] * 10).toString() + "%"}}
-                    ></div>
-                  </div>
-                </div>
-              )
-            })
-          }
-        </div>
-      </React.Fragment>
-    )
-  }
-  return rows;
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  );
 }
 
 
@@ -168,7 +145,7 @@ function getRates(imgs, gender) {
       .then(b64 => b64.split(',').at(-1));
     })
   ).then(instances => fetch(
-      host + ((gender === "m") ? "/api/man/predict" : "/api/woman/predict"),
+      host + ((gender === "m") ? "/man/predict" : "/woman/predict"),
       {
         method: "POST",
         body: JSON.stringify({"instances": instances}),

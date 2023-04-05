@@ -18,48 +18,39 @@ body {
   z-index: -1;
 }
 
-.card > img {
+#gallery .img-wrapper {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gallery .rate-wrapper {
+  height: 4rem;
+  padding: 1rem;
+}
+
+#gallery img {
   max-height: 100%;
-  object-fit: contain;
   max-width: 100%;
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
+  padding: 1rem;
 }
 
-.gallery-row {
-  aspect-ratio: 2 / 1;
+#gallery .card {
+  width: 200px;
+  margin: 1rem;
 }
 
-.rate-row > div > div {
-  width: 4rem;
-}
-
-.rate-row {
-  height: 2rem;
-}
-
-.rate-row .progress {
+#gallery .progress {
   width: 100%;
-}
-
-.rate-row span {
-  margin-top: .1rem;
-}
-
-.progress span {
-  position: absolute;
-  width: 100%;
-}
-
-.progress {
   position: relative;
   text-align: center;
+}
+
+#gallery .progress span {
+  margin-top: .1rem;
+  position: absolute;
+  width: 100%;
 }
 
 #upload_btns > div > button {

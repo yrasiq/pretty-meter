@@ -65,7 +65,7 @@ config = configparser.ConfigParser()
 config.read('.cfg')
 man_model = Model(config['DEFAULT']['man'], config['DEFAULT']['device'])
 woman_model = Model(config['DEFAULT']['woman'], config['DEFAULT']['device'])
-app = FastAPI(prefix='/api')
+app = FastAPI()
 
 
 app.add_middleware(
