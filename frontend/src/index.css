@@ -19,7 +19,6 @@ body {
 }
 
 #gallery .img-wrapper {
-  aspect-ratio: 1 / 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,11 +50,6 @@ body {
   margin-top: .1rem;
   position: absolute;
   width: 100%;
-}
-
-#upload_btns > div > button {
-  aspect-ratio: 1 / 1;
-  --bs-btn-padding-x: 1.25rem;
 }
 
 #upload_btns > div > button > span {
