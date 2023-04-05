@@ -6,6 +6,11 @@ import './index.css';
 
 const host = 'http://127.0.0.1:80';
 
+const MAX_WIDTH = 512;
+const MAX_HEIGHT = 512;
+const MIME_TYPE = "image/jpeg";
+const QUALITY = 0.99;
+
 
 function ImagesGallery({images, showRates, rates}) {
   return (
@@ -128,12 +133,55 @@ function ImagesControlButtons({
 }
 
 
+function calculateSize(img, maxWidth, maxHeight) {
+  let width = img.width;
+  let height = img.height;
+
+  if (width > height) {
+      if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+      }
+  } else {
+      if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+      }
+  }
+  return [width, height];
+}
+
+
+function compressImg(file) {
+  return new Promise((resolve, reject) => {
+    const blobURL = URL.createObjectURL(file);
+    const img = new Image();
+    img.src = blobURL;
+    img.onerror = error => reject(error);
+    img.onload = function () {
+      URL.revokeObjectURL(this.src);
+      const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+      const canvas = document.createElement("canvas");
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+      canvas.toBlob(
+        (blob) => resolve(blob),
+        MIME_TYPE,
+        QUALITY
+      );
+    };
+  });
+}
+
+
 function toBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
   });
 }
 
@@ -141,8 +189,11 @@ function toBase64(file) {
 function getRates(imgs, gender) {
   return Promise.all(
     Array.from(imgs).map(img => {
-      return toBase64(img)
-      .then(b64 => b64.split(',').at(-1));
+      return (
+        compressImg(img)
+        .then(blob => toBase64(blob))
+        .then(b64 => b64.split(',').at(-1))
+      );
     })
   ).then(instances => fetch(
       host + ((gender === "m") ? "/man/predict" : "/woman/predict"),
