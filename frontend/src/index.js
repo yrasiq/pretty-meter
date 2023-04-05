@@ -168,7 +168,7 @@ function getRates(imgs, gender) {
       .then(b64 => b64.split(',').at(-1));
     })
   ).then(instances => fetch(
-      host + ((gender === "m") ? "/man/predict" : "/woman/predict"),
+      host + ((gender === "m") ? "/api/man/predict" : "/api/woman/predict"),
       {
         method: "POST",
         body: JSON.stringify({"instances": instances}),
