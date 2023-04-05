@@ -154,7 +154,18 @@ function getRates(imgs, gender) {
         },
       }
     )
-  ).then(r => r.json());
+  ).then((r) => {
+    if (r.ok) {
+      return r.json();
+    } else {
+      let message = "status: " + r.status;
+      if (r.status === 413) {
+        message = "Файлы слишком большие. Попробуйте уменьшить их количество или размер";
+      }
+      alert(message);
+      throw new Error(message);
+    }
+  });
 }
 
 
@@ -210,11 +221,13 @@ class PreviewMultipleImages extends React.Component {
   }
 
   handleSendImages() {
+    this.setState({
+      imagesIsChanged: false,
+    })
     getRates(this.state.imagesBlobs, this.state.gender)
     .then(predictions => {
       this.setState({
         showRates: true,
-        imagesIsChanged: false,
         rates: predictions.predictions,
       })
     });
