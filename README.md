@@ -8,7 +8,7 @@ TODO: Вынести настройки и яндекс метрику куда-
 ## [inferenceService](/inferenceService)
 REST api к моделям на фреймворке FASTapi и тесты к данному сервису. Тесты не тестируют результаты предсказаний модели, а только корректность работы REST api сервиса.
   - [/.cfg](/.cfg) - файл конфигов сервиса
-  - [Dockerfile.inferenceService-cpu](/Dockerfile.inferenceService-cpu) - докерфайл для сборки docker image. Вариант для работы на cpu, но сервис так же готов работать и на gpu, в случае работы в docker container нужно лишь подкорректировать Dockerfile и изменить настройку "device = gpu" в конфиге
+  - [Dockerfile.inferenceService-cpu](/Dockerfile.inferenceService-cpu) - докерфайл для сборки docker image. Вариант для работы на cpu, но сервис так же готов работать и на gpu, в случае работы в docker container нужно лишь подкорректировать Dockerfile и изменить настройку "device = gpu" в конфиге.
 API спецификацию можно посмотреть стандартным способом для FASTapi "\<protocol\>://\<host\>:\<port\>/docs", либо просто в коде
 
 ## Обучение модели
