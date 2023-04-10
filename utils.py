@@ -13,12 +13,17 @@ class Dataset(torch.utils.data.Dataset):
     def __init__(self, df: pd.DataFrame, transforms: transforms.Compose = None):
         self.transforms = transforms
         self.df = df
+        self.df['voices_weight'] = self.df['voices'] ** 0.5
+        self.voices_weight = 1 / (
+            self.df['voices_weight'].sort_values().median()
+            / self.df['weight'].sort_values().median()
+        )
 
     def __getitem__(self, idx):
         img = Image.open(BytesIO(self.df['img'][idx])).convert('RGB')
         rate = self.df['rate'][idx]
         rate = torch.Tensor([rate])
-        weight = self.df['weight'][idx]
+        weight = self.df['weight'][idx] + (self.df['voices_weight'][idx] - 1) * self.voices_weight
         weight = torch.Tensor([weight])
 
         if self.transforms is not None:

@@ -1,12 +1,12 @@
 import sys
-sys.path.append('../')
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import pandas as pd
 import logging
 from argparse import ArgumentParser
 from PIL import Image
 import torchvision.transforms as transforms
-import torchvision.transforms.functional as F
 from io import BytesIO
 from utils import SquarePad
 from tqdm import tqdm
