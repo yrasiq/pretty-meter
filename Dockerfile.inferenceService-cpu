@@ -26,6 +26,7 @@ COPY ./utils.py ./utils.py
 COPY ./inferenceService/app.py ./inferenceService/app.py
 COPY ${MAN_MODEL_FROM} ${MAN_MODEL_DEST}
 COPY ${WOMAN_MODEL_FROM} ${WOMAN_MODEL_DEST}
+COPY ./retinanet_resnet50_fpn_v2_coco-5905b1c5.pth /root/.cache/torch/hub/checkpoints/retinanet_resnet50_fpn_v2_coco-5905b1c5.pth
 
 EXPOSE 80
 

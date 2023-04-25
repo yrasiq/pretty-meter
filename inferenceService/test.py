@@ -24,9 +24,9 @@ def assert_predict(resp: Response, instances_size: int) -> None:
     assert result.get('predictions')
     assert len(result['predictions']) == instances_size
     for predict in result['predictions']:
-        assert isinstance(predict, float)
-        assert predict >= 0.0
-        assert predict <= 10.0
+        assert isinstance(predict, (float, None))
+        assert predict is None or predict >= 0.0
+        assert predict is None or predict <= 10.0
         assert len(str(predict)) == 3
 
 

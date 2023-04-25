@@ -24,11 +24,11 @@ function ImagesGallery({images, showRates, rates}) {
               </div>
               <div className={"rate-wrapper d-flex justify-content-center" + (showRates ? "" : " d-none")}>
                 <div className="progress h-100">
-                  <span className="h4">{rates[index].toString()}</span>
+                  <span className="h4">{rates[index] ? rates[index].toString() : '?'}</span>
                   <div
                     className="progress-bar"
                     role="progressbar"
-                    aria-valuenow={rates[index].toString()}
+                    aria-valuenow={rates[index] ? rates[index].toString() : 0}
                     aria-valuemin="0"
                     aria-valuemax="10"
                     style={{width: (rates[index] * 10).toString() + "%"}}
@@ -51,6 +51,7 @@ function ImagesControlButtons({
   images,
   imagesIsChanged,
   gender,
+  is_processing,
 }) {
   const ref = useRef(null);
   const handleUpload = (e) => {
@@ -88,16 +89,24 @@ function ImagesControlButtons({
           onClick={() => handleSendImages()}
           disabled={images.length === 0 || !imagesIsChanged || !gender}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            fill="currentColor"
-            className="bi bi-check2"
-            viewBox="0 0 16 16"
-          >
-            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-          </svg>
+          {
+            is_processing ? (
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            ) : (
+              <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              fill="currentColor"
+              className="bi bi-check2"
+              viewBox="0 0 16 16"
+              >
+                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+              </svg>
+            )
+          }
         </button>
       </div>
       <div className="p-3">
@@ -233,6 +242,7 @@ class PreviewMultipleImages extends React.Component {
       rates: [],
       gender: "",
       imagesBlobs: [],
+      is_processing: false,
     }
   }
 
@@ -275,12 +285,14 @@ class PreviewMultipleImages extends React.Component {
   handleSendImages() {
     this.setState({
       imagesIsChanged: false,
+      is_processing: true,
     })
     getRates(this.state.imagesBlobs, this.state.gender)
     .then(predictions => {
       this.setState({
         showRates: true,
         rates: predictions.predictions,
+        is_processing: false,
       })
     });
   }
@@ -295,6 +307,7 @@ class PreviewMultipleImages extends React.Component {
           images={this.state.images}
           imagesIsChanged={this.state.imagesIsChanged}
           gender={this.state.gender}
+          is_processing={this.state.is_processing}
         />
         <Toombler handleGenderToombler={this.handleGenderToombler}/>
         <ImagesGallery

@@ -6,6 +6,7 @@ from PIL import Image
 import pandas as pd
 from io import BytesIO
 from statistics import mean
+from torchvision.models.detection import RetinaNet_ResNet50_FPN_V2_Weights
 
 
 class Dataset(torch.utils.data.Dataset):
@@ -86,6 +87,10 @@ class TestResult:
         )
 
 
+class NotFoundPerson(Exception):
+    pass
+
+
 def weighted_mse_loss(inputs: torch.Tensor, targets: torch.Tensor, weights: torch.Tensor=None):
     loss = (inputs - targets) ** 2
     if weights is not None:
@@ -103,6 +108,12 @@ def weighted_l1_loss(inputs: torch.Tensor, targets: torch.Tensor, weights: torch
 def weighted_rmse_loss(inputs: torch.Tensor, targets: torch.Tensor, weights: torch.Tensor=None):
     return weighted_mse_loss(inputs, targets, weights) ** 0.5
 
+def get_person_rect(person_data: dict[str: torch.Tensor], person_index: int, treshold: float=0.66) -> np.ndarray:
+    boxes = person_data['boxes'].detach().cpu()[[(person_data['labels'] == person_index) & (person_data['scores'] >= treshold)]].numpy()
+    if not boxes.any():
+        raise NotFoundPerson
+    distances = [np.linalg.norm(box[:2]-box[2:]) for box in boxes]
+    return boxes[distances.index(max(distances))]
 
 test_transform = transforms.Compose([
 	SquarePad(),
@@ -113,9 +124,8 @@ test_transform = transforms.Compose([
 train_transform = transforms.Compose([
 	SquarePad(),
     transforms.Resize((256, 256)),
-    transforms.RandomCrop((256, 256), padding=16),
+    transforms.RandomCrop((256, 256), padding=32),
     transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(degrees=60),
-    transforms.ColorJitter(brightness=0.25, contrast=0.25, saturation=(0, 1)),
+    transforms.ColorJitter(brightness=0.125, contrast=0.125, saturation=(0, 2)),
     transforms.ToTensor(),
 ])
